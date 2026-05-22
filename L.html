@@ -1,0 +1,683 @@
+Here is your updated, fully integrated md.html file.
+### What's Changed:
+ * **Formspree Integration:** Removed the static Google Forms iframe and replaced it with a native, beautifully styled HTML contact form linked to Formspree.
+ * **Global Hover Effects:** Added micro-interactions to every major section. Headers, galleries, textual layout containers, and form inputs now subtly respond with interactive scales, deep custom shadows, or accent borders when you hover over them.
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aesthetic Portfolio</title>
+  <style>
+    /* --- CSS Variables & Reset --- */
+    :root {
+      --bg: #09090b;
+      --text-main: #fafafe;
+      --text-muted: #a1a1aa;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.08);
+      
+      /* Default Theme (Violet) */
+      --accent: #8b5cf6;
+      --accent-2: #3b82f6;
+    }
+
+    /* --- Accent Themes --- */
+    body.theme-emerald {
+      --accent: #10b981;
+      --accent-2: #059669;
+    }
+    body.theme-rose {
+      --accent: #f43f5e;
+      --accent-2: #e11d48;
+    }
+    body.theme-amber {
+      --accent: #f59e0b;
+      --accent-2: #d97706;
+    }
+
+    /* --- Integrated Light/White Theme --- */
+    body.theme-light {
+      --bg: #ffffff;
+      --text-main: #09090b;
+      --text-muted: #71717a;
+      --card-bg: rgba(0, 0, 0, 0.02);
+      --card-border: rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      overflow-x: hidden;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    /* --- Animated Bubbles Background --- */
+    #bubbles-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none; 
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      background: radial-gradient(circle at 30% 30%, var(--accent), transparent);
+      border-radius: 50%;
+      opacity: 0.3;
+      filter: blur(8px);
+      animation: floatUp 15s infinite ease-in;
+      transition: background 0.5s ease;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.4;
+      }
+      50% {
+        transform: translateY(-50vh) translateX(50px) scale(1.2);
+      }
+      100% {
+        transform: translateY(-120vh) translateX(-50px) scale(0.8);
+        opacity: 0;
+      }
+    }
+
+    /* --- Navigation --- */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 1.5rem 8%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(9, 9, 11, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 1000;
+      border-bottom: 1px solid var(--card-border);
+      transition: background 0.5s ease, border-color 0.5s ease;
+    }
+
+    body.theme-light nav {
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-main);
+    }
+
+    /* --- Sections Global Hover Interaction --- */
+    section {
+      padding: 6rem 8%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+      border-radius: 24px;
+      transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.5s ease;
+    }
+
+    /* Subtle lift behavior for entire sections on desktop hover */
+    @media (min-width: 901px) {
+      section:hover {
+        transform: translateY(-4px);
+        background-color: rgba(255, 255, 255, 0.01);
+      }
+      body.theme-light section:hover {
+        background-color: rgba(0, 0, 0, 0.005);
+      }
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+      transition: transform 0.3s ease;
+    }
+    section:hover h2 {
+      transform: translateX(5px);
+    }
+
+    /* --- Hero Section --- */
+    header {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 6rem 8% 0 8%;
+      position: relative;
+    }
+
+    .hero-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 3rem;
+      z-index: 1;
+    }
+
+    .hero-text {
+      flex: 1;
+      max-width: 600px;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -1px;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: all 0.5s ease;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 2.5rem;
+      background: var(--text-main);
+      color: var(--bg);
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    body.theme-light .btn {
+      background: #09090b;
+      color: #ffffff;
+    }
+
+    .btn:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 15px 30px rgba(255, 255, 255, 0.15);
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #ffffff;
+    }
+
+    body.theme-light .btn:hover {
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .hero-image {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .profile-pic {
+      width: 100%;
+      max-width: 350px;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--card-border);
+      box-shadow: 0 0 40px rgba(255, 255, 255, 0.05);
+      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.4s ease;
+    }
+
+    .profile-pic:hover {
+      transform: scale(1.05) rotate(1deg);
+      border-color: var(--accent);
+    }
+
+    /* --- Grid & Cards --- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 2.5rem;
+      border-radius: 20px;
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(10px);
+      transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-12px) scale(1.01);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--accent);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    body.theme-light .card:hover {
+      background: rgba(0, 0, 0, 0.03);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    }
+
+    .card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* --- Image Gallery Section --- */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .gallery-grid img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 15px;
+      border: 1px solid var(--card-border);
+      transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.5s ease, filter 0.3s ease;
+    }
+
+    .gallery-grid img:hover {
+      transform: scale(1.05) translateY(-5px);
+      border-color: var(--accent);
+      z-index: 2;
+    }
+
+    /* --- Formspree Native Contact Layout --- */
+    .formspree-container {
+      width: 100%;
+      max-width: 600px;
+      margin: 2rem auto 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 3rem;
+      border-radius: 24px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+      text-align: left;
+    }
+
+    .formspree-container:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    body.theme-light .formspree-container {
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      color: var(--text-main);
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    body.theme-light .form-group input,
+    body.theme-light .form-group textarea {
+      background: rgba(0, 0, 0, 0.01);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+    }
+
+    .formspree-container .btn {
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    /* --- Theme Switcher Widget --- */
+    .theme-switcher {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: rgba(9, 9, 11, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      padding: 0.6rem;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      z-index: 1000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .theme-btn {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .theme-btn:hover {
+      transform: scale(1.2);
+    }
+
+    .color-violet { background: linear-gradient(135deg, #8b5cf6, #3b82f6); }
+    .color-emerald { background: linear-gradient(135deg, #10b981, #059669); }
+    .color-rose { background: linear-gradient(135deg, #f43f5e, #e11d48); }
+    .color-amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+    .switcher-divider {
+      width: 1px;
+      height: 20px;
+      background-color: var(--card-border);
+    }
+
+    .toggle-mode-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: transform 0.2s ease;
+      padding: 0 0.2rem;
+    }
+    
+    .toggle-mode-btn:hover {
+      transform: scale(1.2);
+    }
+
+    /* --- Footer --- */
+    footer {
+      text-align: center;
+      padding: 3rem 8%;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
+    }
+
+    /* --- Scroll Reveal Animations --- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+
+    /* --- Responsive Design --- */
+    @media (max-width: 900px) {
+      .hero-wrapper {
+        flex-direction: column-reverse;
+        text-align: center;
+        margin-top: 2rem;
+      }
+      .hero-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .profile-pic {
+        max-width: 250px;
+        margin-bottom: 2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav { flex-direction: column; padding: 1.2rem; gap: 1rem; }
+      .nav-links { gap: 1.5rem; }
+      section { padding: 4rem 5%; }
+      .theme-switcher { bottom: 1rem; right: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="bubbles-container"></div>
+
+  <div class="theme-switcher">
+    <button class="theme-btn color-violet" onclick="changeAccent('default')" title="Violet"></button>
+    <button class="theme-btn color-emerald" onclick="changeAccent('theme-emerald')" title="Emerald"></button>
+    <button class="theme-btn color-rose" onclick="changeAccent('theme-rose')" title="Rose"></button>
+    <button class="theme-btn color-amber" onclick="changeAccent('theme-amber')" title="Amber"></button>
+    
+    <div class="switcher-divider"></div>
+    
+    <button class="toggle-mode-btn" onclick="toggleLightMode()" title="Toggle Dark/White Mode">🌓</button>
+  </div>
+
+  <nav>
+    <div class="logo">Aura.</div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#work">Work</a>
+      <a href="#visuals">Visuals</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <header id="home">
+    <div class="hero-wrapper reveal active">
+      <div class="hero-text">
+        <h1>Hi, I'm Alex.<br>I build <span>digital experiences.</span></h1>
+        <p class="subtitle">A creative developer focusing on clean aesthetics, fluid animations, and building things that live on the web.</p>
+        <a href="#work" class="btn">View My Work</a>
+      </div>
+
+      <div class="hero-image reveal delay-1 active">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="My Profile Picture" class="profile-pic">
+      </div>
+    </div>
+  </header>
+
+  <section id="work">
+    <h2 class="reveal">Selected Projects</h2>
+    <div class="grid">
+      <div class="card reveal delay-1">
+        <h3>Project Alpha</h3>
+        <p>A minimalist dashboard designed for clarity and speed. Built with modern web technologies and a focus on UX.</p>
+      </div>
+      <div class="card reveal delay-2">
+        <h3>Neon Social</h3>
+        <p>A conceptual platform focusing on real-time interactions with heavy use of WebGL and fluid animations.</p>
+      </div>
+      <div class="card reveal delay-3">
+        <h3>Fintech App</h3>
+        <p>A dark-mode first interface featuring smooth micro-interactions and complex data visualizations.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="visuals">
+    <h2 class="reveal">Visuals & Life</h2>
+    <div class="gallery-grid">
+      <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Workspace" class="reveal delay-1">
+      <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Coding" class="reveal delay-2">
+      <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Team" class="reveal delay-3">
+      <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Laptop" class="reveal delay-1">
+    </div>
+  </section>
+
+  <section id="about">
+    <h2 class="reveal">Behind the Code</h2>
+    <div class="card reveal" style="max-width: 800px; margin: 0 auto;">
+      <p style="font-size: 1.1rem; margin-bottom: 1rem;">
+        I bridge the gap between design and engineering. My goal is to create interfaces that don't just work smoothly, but feel great to use.
+      </p>
+      <p>
+        When I'm not coding, I'm usually exploring photography, tweaking color palettes, or reading up on the latest frontend frameworks.
+      </p>
+    </div>
+  </section>
+
+  <section id="contact" style="align-items: center; text-align: center;">
+    <h2 class="reveal">Let's create together</h2>
+    <p class="subtitle reveal delay-1" style="margin: 0 auto 1rem auto;">Currently available for freelance opportunities. Drop me a line below!</p>
+    
+    <div class="formspree-container reveal delay-2">
+      <form action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" name="name" placeholder="John Doe" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="_replyto" placeholder="hello@example.com" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" placeholder="Tell me about your amazing project ideas..." required></textarea>
+        </div>
+        
+        <button type="submit" class="btn">Send Message</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Aura Portfolio. Handcrafted with HTML, CSS, and Vanilla JS.</p>
+  </footer>
+
+  <script>
+    // 1. Dual Engine Custom Switcher Logic
+    function changeAccent(themeName) {
+      document.body.classList.remove('theme-emerald', 'theme-rose', 'theme-amber');
+      if (themeName !== 'default') {
+        document.body.classList.add(themeName);
+      }
+    }
+
+    function toggleLightMode() {
+      document.body.classList.toggle('theme-light');
+    }
+
+    // 2. Ambient Particles / Bubble Generation Engine
+    function createBubbles() {
+      const container = document.getElementById('bubbles-container');
+      const bubbleCount = 15;
+
+      for (let i = 0; i < bubbleCount; i++) {
+        let bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+        
+        let size = Math.random() * 150 + 50; 
+        let leftPos = Math.random() * 100; 
+        let duration = Math.random() * 10 + 10; 
+        let delay = Math.random() * 10; 
+
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        bubble.style.left = `${leftPos}%`;
+        bubble.style.animationDuration = `${duration}s`;
+        bubble.style.animationDelay = `${delay}s`;
+
+        container.appendChild(bubble);
+      }
+    }
+
+    // 3. Native Intersection Observer Animation Hook
+    document.addEventListener("DOMContentLoaded", () => {
+      createBubbles(); 
+
+      const reveals = document.querySelectorAll('.reveal');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+          }
+        });
+      }, {
+        threshold: 0.15,
+        rootMargin: "0px 0px -50px 0px"
+      });
+
+      reveals.forEach(reveal => {
+        observer.observe(reveal);
+      });
+    });
+  </script>
+
+</body>
+</html>
+
+```
+### ⚙️ Final Step to Activate Your Form:
+ 1. Go to Formspree.io, log in, and create a new form.
+ 2. Copy your unique target ID string.
+ 3. Replace YOUR_FORMSPREE_ID on **line 315** with your token code, save your code file, and it's ready to safely collect submission data instantly.
